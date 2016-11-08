@@ -99,6 +99,13 @@ static const bool config_fill =
     false
 #endif
     ;
+static const size_t config_prealloc_size =
+#ifdef JEMALLOC_PREALLOC_SIZE
+    JEMALLOC_PREALLOC_SIZE
+#else
+    0    
+#endif
+    ;
 static const bool config_lazy_lock =
 #ifdef JEMALLOC_LAZY_LOCK
     true

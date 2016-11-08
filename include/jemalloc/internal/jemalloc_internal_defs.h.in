@@ -125,6 +125,11 @@
 /* Support memory filling (junk/zero/quarantine/redzone). */
 #undef JEMALLOC_FILL
 
+/* Support preallocated size at startup where further allocations will be taken
+ * out from.
+ */
+#undef JEMALLOC_PREALLOC_SIZE
+
 /* Support utrace(2)-based tracing. */
 #undef JEMALLOC_UTRACE
 

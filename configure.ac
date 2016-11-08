@@ -509,6 +509,14 @@ AC_ARG_WITH([export],
 fi]
 )
 
+dnl Preallocate memory to use for further allocations
+AC_ARG_WITH([prealloc_size],
+  [AS_HELP_STRING([--with-prealloc-size=<size>], [Preallocate this size (in GiB) to be used by further allocations])],
+  [JEMALLOC_PREALLOC_SIZE="$with_prealloc_size"],
+  [JEMALLOC_PREALLOC_SIZE="0"],
+)
+AC_DEFINE_UNQUOTED([JEMALLOC_PREALLOC_SIZE], [$JEMALLOC_PREALLOC_SIZE])
+
 dnl Mangle library-private APIs.
 AC_ARG_WITH([private_namespace],
   [AS_HELP_STRING([--with-private-namespace=<prefix>], [Prefix to prepend to all library-private APIs])],
@@ -1476,6 +1484,7 @@ AC_MSG_RESULT([prof-libgcc        : ${enable_prof_libgcc}])
 AC_MSG_RESULT([prof-gcc           : ${enable_prof_gcc}])
 AC_MSG_RESULT([tcache             : ${enable_tcache}])
 AC_MSG_RESULT([fill               : ${enable_fill}])
+AC_MSG_RESULT([prealloc-size      : ${JEMALLOC_PREALLOC_SIZE}])
 AC_MSG_RESULT([utrace             : ${enable_utrace}])
 AC_MSG_RESULT([valgrind           : ${enable_valgrind}])
 AC_MSG_RESULT([xmalloc            : ${enable_xmalloc}])

@@ -76,6 +76,7 @@ CTL_PROTO(thread_deallocatedp)
 CTL_PROTO(config_debug)
 CTL_PROTO(config_dss)
 CTL_PROTO(config_fill)
+CTL_PROTO(config_prealloc_size)
 CTL_PROTO(config_lazy_lock)
 CTL_PROTO(config_mremap)
 CTL_PROTO(config_munmap)
@@ -215,6 +216,7 @@ static const ctl_named_node_t	config_node[] = {
 	{NAME("debug"),			CTL(config_debug)},
 	{NAME("dss"),			CTL(config_dss)},
 	{NAME("fill"),			CTL(config_fill)},
+	{NAME("prealloc_size"),	    CTL(config_prealloc_size)},
 	{NAME("lazy_lock"),		CTL(config_lazy_lock)},
 	{NAME("mremap"),		CTL(config_mremap)},
 	{NAME("munmap"),		CTL(config_munmap)},
@@ -1135,9 +1137,10 @@ label_return:
 
 /******************************************************************************/
 
-CTL_RO_BOOL_CONFIG_GEN(config_debug)
+preallocCTL_RO_BOOL_CONFIG_GEN(config_debug)
 CTL_RO_BOOL_CONFIG_GEN(config_dss)
 CTL_RO_BOOL_CONFIG_GEN(config_fill)
+CTL_RO_NL_GEN(config_prealloc_size, JEMALLOC_PREALLOC_SIZE, size_t)
 CTL_RO_BOOL_CONFIG_GEN(config_lazy_lock)
 CTL_RO_BOOL_CONFIG_GEN(config_mremap)
 CTL_RO_BOOL_CONFIG_GEN(config_munmap)
