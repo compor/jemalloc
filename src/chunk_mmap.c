@@ -19,11 +19,17 @@ static void *chunk_alloc_mmap_slow(size_t size, size_t alignment,
  *
  */
 
-#define MMAP_PREALLOC_SIZE (1024ul * 1024 * 1024 * 64)
+#if JEMALLOC_PREALLOC_SIZE == 0
+#define MMAP_PREALLOC_SIZE (1024ul * 1024 * 1024 * JEMALLOC_PREALLOC_SIZE)
+#endif /* JEMALLOC_PREALLOC_SIZE */
 
+#if JEMALLOC_PREALLOC_SIZE == 0
 static void *global_mmap_ptr;
 static void *global_mmap_ptr_max;
+#endif /* JEMALLOC_PREALLOC_SIZE */
 
+
+#if JEMALLOC_PREALLOC_SIZE == 0
 __attribute__((constructor(101)))
 static void initMmap() {
   global_mmap_ptr = mmap(NULL, MMAP_PREALLOC_SIZE, PROT_READ | PROT_WRITE,
@@ -41,6 +47,7 @@ static void initMmap() {
     exit(1);
   }
 }
+#endif /* JEMALLOC_PREALLOC_SIZE */
 
 static void *
 pages_map(void *addr, size_t size)
@@ -57,28 +64,33 @@ pages_map(void *addr, size_t size)
     ret = VirtualAlloc(addr, size, MEM_COMMIT | MEM_RESERVE,
         PAGE_READWRITE);
 #else
-  /*
-   * Return memory from our pre-allocated chunk if no address specified
-   */
-  if (addr != NULL) {
-    /*
-     * We don't use MAP_FIXED here, because it can cause the *replacement*
-     * of existing mappings, and we only want to create new mappings.
-     */
+
+#if JEMALLOC_PREALLOC_SIZE == 0
     ret = mmap(addr, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON,
-        -1, 0);
-  } else {
-    ret = global_mmap_ptr;
-    global_mmap_ptr = (void *)((char *)(global_mmap_ptr) + size);
-    if (global_mmap_ptr > global_mmap_ptr_max) {
-      /* We ran out of space. */
-      abort();
+              -1, 0);
+#else
+    /*
+    * Return memory from our pre-allocated chunk if no address specified
+    */
+    if (addr != NULL) {
+      /*
+      * We don't use MAP_FIXED here, because it can cause the *replacement*
+      * of existing mappings, and we only want to create new mappings.
+      */
+      ret = mmap(addr, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON,
+          -1, 0);
+    } else {
+      ret = global_mmap_ptr;
+      global_mmap_ptr = (void *)((char *)(global_mmap_ptr) + size);
+      if (global_mmap_ptr > global_mmap_ptr_max) {
+        /* We ran out of space. */
+        abort();
+      }
     }
-  }
+#endif /* JEMALLOC_PREALLOC_SIZE */
 
     assert(ret != NULL);
-
-    if (ret == MAP_FAILED)
+if (ret == MAP_FAILED)
         ret = NULL;
     else if (addr != NULL && ret != addr) {
         /*
@@ -108,11 +120,16 @@ pages_unmap(void *addr, size_t size)
 #ifdef _WIN32
     if (VirtualFree(addr, 0, MEM_RELEASE) == 0)
 #else
+
+#if JEMALLOC_PREALLOC_SIZE == 0
+    if (munmap(addr, size) == -1)
+#else
   /* Do not munmap memory.
    * Instead tell the OS to release the underlying physical memory.
    */
     if (madvise(addr, size, MADV_DONTNEED) == -1)
-#endif
+#endif /* JEMALLOC_PREALLOC_SIZE */
+#endif /* _WIN32 */
     {
         char buf[BUFERROR_BUF];
 
