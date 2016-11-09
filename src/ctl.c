@@ -1137,7 +1137,7 @@ label_return:
 
 /******************************************************************************/
 
-preallocCTL_RO_BOOL_CONFIG_GEN(config_debug)
+CTL_RO_BOOL_CONFIG_GEN(config_debug)
 CTL_RO_BOOL_CONFIG_GEN(config_dss)
 CTL_RO_BOOL_CONFIG_GEN(config_fill)
 CTL_RO_NL_GEN(config_prealloc_size, JEMALLOC_PREALLOC_SIZE, size_t)
