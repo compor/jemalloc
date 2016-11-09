@@ -19,17 +19,17 @@ static void *chunk_alloc_mmap_slow(size_t size, size_t alignment,
  *
  */
 
-#if JEMALLOC_PREALLOC_SIZE == 0
+#if JEMALLOC_PREALLOC_SIZE != 0
 #define MMAP_PREALLOC_SIZE (1024ul * 1024 * 1024 * JEMALLOC_PREALLOC_SIZE)
 #endif /* JEMALLOC_PREALLOC_SIZE */
 
-#if JEMALLOC_PREALLOC_SIZE == 0
+#if JEMALLOC_PREALLOC_SIZE != 0
 static void *global_mmap_ptr;
 static void *global_mmap_ptr_max;
 #endif /* JEMALLOC_PREALLOC_SIZE */
 
 
-#if JEMALLOC_PREALLOC_SIZE == 0
+#if JEMALLOC_PREALLOC_SIZE != 0
 __attribute__((constructor(101)))
 static void initMmap() {
   global_mmap_ptr = mmap(NULL, MMAP_PREALLOC_SIZE, PROT_READ | PROT_WRITE,
