@@ -52,6 +52,9 @@ static void initMmap() {
 static void *
 pages_map(void *addr, size_t size)
 {
+#if __STDC_VERSION__ >= 199901L
+    malloc_printf("func: %s called with size: %zu\n", __func__, size);
+#endif
     void *ret;
 
     assert(size != 0);
@@ -116,6 +119,9 @@ if (ret == MAP_FAILED)
 static void
 pages_unmap(void *addr, size_t size)
 {
+#if __STDC_VERSION__ >= 199901L
+    malloc_printf("func: %s called with size: %zu\n", __func__, size);
+#endif
 
 #ifdef _WIN32
     if (VirtualFree(addr, 0, MEM_RELEASE) == 0)
@@ -206,6 +212,9 @@ pages_purge(void *addr, size_t length)
 static void *
 chunk_alloc_mmap_slow(size_t size, size_t alignment, bool *zero)
 {
+#if __STDC_VERSION__ >= 199901L
+    malloc_printf("func: %s called with size: %zu\n", __func__, size);
+#endif
     void *ret, *pages;
     size_t alloc_size, leadsize;
 
@@ -230,6 +239,10 @@ chunk_alloc_mmap_slow(size_t size, size_t alignment, bool *zero)
 void *
 chunk_alloc_mmap(size_t size, size_t alignment, bool *zero)
 {
+#if __STDC_VERSION__ >= 199901L
+    malloc_printf("func: %s called with size: %zu\n", __func__, size);
+#endif
+
     void *ret;
     size_t offset;
 
