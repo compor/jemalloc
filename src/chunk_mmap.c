@@ -68,7 +68,7 @@ pages_map(void *addr, size_t size)
 #if JEMALLOC_PREALLOC_SIZE == 0
     ret = mmap(addr, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON,
               -1, 0);
-#else
+#else /* JEMALLOC_PREALLOC_SIZE */
     /*
     * Return memory from our pre-allocated chunk if no address specified
     */
@@ -123,7 +123,7 @@ pages_unmap(void *addr, size_t size)
 
 #if JEMALLOC_PREALLOC_SIZE == 0
     if (munmap(addr, size) == -1)
-#else
+#else /* JEMALLOC_PREALLOC_SIZE */
   /* Do not munmap memory.
    * Instead tell the OS to release the underlying physical memory.
    */
