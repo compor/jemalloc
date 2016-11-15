@@ -38,12 +38,12 @@ static void initMmap() {
     MMAP_PREALLOC_SIZE);
 
   if (getenv("JEMALLOC_DEBUG") != NULL) {
-    fprintf(stderr, "[JEMALLOC] Start %lx End %lx\n",
+    malloc_printf("<jemalloc>: start %lx end %lx\n",
             (uint64_t)global_mmap_ptr, (uint64_t)global_mmap_ptr_max);
   }
 
   if (global_mmap_ptr == MAP_FAILED) {
-    fprintf(stderr, "[JEMALLOC] Cannot pre-allocate large chunk of memory\n");
+    malloc_printf("<jemalloc>: cannot pre-allocate large chunk of memory\n");
     exit(1);
   }
 }
@@ -100,7 +100,7 @@ if (ret == MAP_FAILED)
             char buf[BUFERROR_BUF];
 
             buferror(get_errno(), buf, sizeof(buf));
-            malloc_printf("<jemalloc: Error in munmap(): %s\n",
+            malloc_printf("<jemalloc>: Error in munmap(): %s\n",
                 buf);
             if (opt_abort)
                 abort();
