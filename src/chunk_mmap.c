@@ -279,6 +279,9 @@ chunk_alloc_mmap(size_t size, size_t alignment, bool *zero)
 bool
 chunk_dealloc_mmap(void *chunk, size_t size)
 {
+#if __STDC_VERSION__ >= 199901L
+    malloc_printf("func: %s called with size: %zu\n", __func__, size);
+#endif
 
     if (config_munmap)
         pages_unmap(chunk, size);
